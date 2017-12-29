@@ -1,0 +1,87 @@
+#!/usr/bin/env python2#
+import click
+import pprint
+import os
+import sys
+import logging
+import errno
+
+abspath = os.path.abspath(__file__)
+curdir = os.path.dirname(abspath)
+
+@click.group()
+def cli():
+    pass
+@cli.command("run", help="test execution")
+def run():
+
+
+
+
+    pprint.pprint("running tc")
+    tc_name = "tc1.py"
+
+    tc_module = tc_name.replace(".py", "")
+    print("Module is {}".format(tc_module))
+
+    print(abspath)
+    print(curdir)
+
+    # start log
+    log_dir = curdir + "/logs/{}/".format(os.uname()[1])
+    # create the logir and only report an exception if the error is diferent than directory exists
+    try:
+        os.makedirs(log_dir)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise Exception("Directory creation unsuccessful")
+
+    log_file = "{}{}.log".format(log_dir, tc_module)
+    f_handler = logging.FileHandler(log_file, "w")
+    console = logging.StreamHandler(sys.stdout)
+
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    f_handler.setFormatter(formatter)
+    console.setFormatter(formatter)
+
+    log = logging.getLogger()
+    for h in log.handlers:
+        log.removeHandler(h)
+
+    log.addHandler(f_handler)
+    log.addHandler(console)
+    log.setLevel(level=logging.INFO)
+
+    root_dir = os.path.dirname(abspath)
+
+    print(root_dir)
+
+    tc_dir = "linux"
+
+    try:
+        sys.path.append(root_dir + "/tests/" + tc_dir)
+    except:
+        raise Exception("Could not add system path")
+
+    # Create object for the module name, using import module __import
+    imp_mod = __import__(tc_module)
+
+    pprint.pprint(imp_mod)
+
+    # Load the class object using getattr
+    try:
+        tc_cls = getattr(imp_mod, tc_module)
+    except:
+        raise Exception("Failed to load tc class")
+
+    # Create object using the loaded class.
+    log.info("Running tc")
+    tc_obj = tc_cls()
+    tc_obj.setup()
+    tc_obj.test()
+    tc_obj.teardown()
+    log.removeHandler(f_handler)
+
+if __name__ == '__main__':
+    cli()
