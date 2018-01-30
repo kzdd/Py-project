@@ -1,14 +1,19 @@
 import pprint
+import library.host as host
 
 class tc2:
     def __init__(self):
         pprint.pprint("In the constructor")
+        self.myhost = host()
+
+
 
     def setup(self):
         pprint.pprint("In the setup")
 
     def test(self):
         pprint.pprint("In test")
+        self.myhost.execut("ls")
 
     def teardown(self):
         pprint.pprint("In the teardown")

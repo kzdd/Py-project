@@ -1,0 +1,6 @@
+2018-01-29 22:11:27,357 - root - INFO - Running tc
+2018-01-29 22:11:27,458 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_7.4)
+2018-01-29 22:11:27,620 - paramiko.transport - INFO - Authentication (password) successful!
+2018-01-29 22:11:27,634 - tc1.pyc - INFO - In the setup
+2018-01-29 22:11:27,634 - tc1.pyc - INFO - In test
+2018-01-29 22:11:27,692 - tc1.pyc - INFO - In the teardown
